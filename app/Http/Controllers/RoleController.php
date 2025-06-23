@@ -22,26 +22,21 @@ class RoleController extends Controller
      */
    public function store(Request $request)
     {
-        // Validate request data
         $request->validate([
             'name' => 'required|string|unique:roles,name',
             'description' => 'nullable|string',
             'status' => 'required|boolean',
         ]);
+        $role = Role::create($request->only(['name', 'description', 'status']));
 
-        // Create and save new Role
-        $role = new Role();
-        $role->name = $request->name;
-        $role->description = $request->description;
-        $role->status = $request->status;
-        $role->save();
-
-        // Return response
         return response()->json([
-            'message' => 'Role Created Successfully',
-            'data' => $role
-        ], 201); // 201 = Created
+            'status' => 'success',
+            'code' => '00',
+            'message' => 'Role created successfully.',
+            'data' => $role,
+        ], 201); 
     }
+
 
 
     /**
@@ -57,25 +52,6 @@ class RoleController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    // public function update(Request $request, string $id)
-    // {
-    //     $role = Role::find($id);
-    //     if($role){ 
-    //         $role->name = $request->name;
-    //         $role->description = $request->description;
-    //         $role->status = $request->status;
-    //         $role->save(); 
-    //         return [
-    //             "message" => "Role Updated Successfully",
-    //             "data" => $role
-    //         ];
-    //     }else{
-    //         return [
-    //             "message" => "Role Not Found",
-    //             "error" => true
-    //         ];
-    //     }
-    // }
 
     public function update(Request $request, $id)
     {
@@ -86,19 +62,25 @@ class RoleController extends Controller
         ]);
 
         $role = Role::find($id);
-        if ($role) {
-            $role->update($request->only(['name', 'description', 'status']));
+
+        if (!$role) {
             return response()->json([
-                'message' => 'Role Updated Successfully',
-                'data' => $role,
-            ]);
-        } else {
-            return response()->json([
-                'message' => 'Role Not Found',
-                'error' => true,
+                'status' => 'error',
+                'code' => '01',
+                'message' => 'Role not found.',
             ], 404);
         }
+
+        $role->update($request->only(['name', 'description', 'status']));
+
+        return response()->json([
+            'status' => 'success',
+            'code' => '00',
+            'message' => 'Role updated successfully.',
+            'data' => $role,
+        ], 200);
     }
+
 
 
     /**
@@ -106,6 +88,23 @@ class RoleController extends Controller
      */
     public function destroy(string $id)
     {
-        //
+        $role = Role::find($id);
+
+        if (!$role) {
+            return response()->json([
+                'status' => 'error',
+                'code' => '01',
+                'message' => 'Role not found.',
+            ], 404);
+        }
+
+        $role->delete();
+
+        return response()->json([
+            'status' => 'success',
+            'code' => '00',
+            'message' => 'Role deleted successfully.',
+        ], 200);
     }
+
 }

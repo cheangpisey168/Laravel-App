@@ -18,8 +18,10 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     return $request->user();
 });
 
-    Route::get('role',[RoleController::class,'index']);
-    Route::get('role/{id}',[RoleController::class,'show']);
-    Route::post('role',[RoleController::class,'store']);
-    Route::put('role/{id}',[RoleController::class,'update']);
-    Route::delete('role/{id}',[RoleController::class,'destroy']);
+    // Route::get('role',[RoleController::class,'index']);
+    // Route::get('role/{id}',[RoleController::class,'show']);
+    // Route::post('role',[RoleController::class,'store']);
+    // Route::put('role/{id}',[RoleController::class,'update']);
+    // Route::delete('role/{id}',[RoleController::class,'destroy']);
+
+    Route::apiResource('role', RoleController::class);
